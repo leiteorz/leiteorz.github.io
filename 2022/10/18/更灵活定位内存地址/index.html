@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://example.com">
   <title>更灵活定位内存地址 | leiteorz的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="更灵活定位内存地址">
+  <meta name="description" content="更灵活定位内存地址1.SI和DISI和DI是8086CPU中和bx功能相近的寄存器，但是SI和DI不能够分为两个8位寄存器使用。 下面三组指令实现了相同的功能">
 <meta property="og:type" content="article">
 <meta property="og:title" content="更灵活定位内存地址">
 <meta property="og:url" content="http://example.com/2022/10/18/%E6%9B%B4%E7%81%B5%E6%B4%BB%E5%AE%9A%E4%BD%8D%E5%86%85%E5%AD%98%E5%9C%B0%E5%9D%80/index.html">
 <meta property="og:site_name" content="leiteorz的博客">
-<meta property="og:description" content="更灵活定位内存地址">
+<meta property="og:description" content="更灵活定位内存地址1.SI和DISI和DI是8086CPU中和bx功能相近的寄存器，但是SI和DI不能够分为两个8位寄存器使用。 下面三组指令实现了相同的功能">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://leiteorz.oss-cn-hangzhou.aliyuncs.com/img/image-20221018212503530.png">
 <meta property="og:image" content="https://leiteorz.oss-cn-hangzhou.aliyuncs.com/img/image-20221018215751846.png">
 <meta property="og:image" content="https://leiteorz.oss-cn-hangzhou.aliyuncs.com/img/image-20221019210537607.png">
 <meta property="article:published_time" content="2022-10-18T07:46:03.000Z">
-<meta property="article:modified_time" content="2022-10-20T02:47:57.210Z">
+<meta property="article:modified_time" content="2022-10-20T03:11:11.566Z">
 <meta property="article:author" content="leiteorz">
 <meta property="article:tag" content="汇编笔记">
 <meta name="twitter:card" content="summary">
@@ -181,10 +181,10 @@
       
 
              
-        <h1 id="更灵活定位内存地址"><a href="#更灵活定位内存地址" class="headerlink" title="更灵活定位内存地址"></a>更灵活定位内存地址</h1><span id="more"></span>
-
-<h2 id="1-SI和DI"><a href="#1-SI和DI" class="headerlink" title="1.SI和DI"></a>1.SI和DI</h2><p><strong>SI和DI</strong>是8086CPU中和<strong>bx功能相近</strong>的寄存器，但是SI和DI<strong>不能够分为两个8位寄存器</strong>使用。</p>
+        <h1 id="更灵活定位内存地址"><a href="#更灵活定位内存地址" class="headerlink" title="更灵活定位内存地址"></a>更灵活定位内存地址</h1><h2 id="1-SI和DI"><a href="#1-SI和DI" class="headerlink" title="1.SI和DI"></a>1.SI和DI</h2><p><strong>SI和DI</strong>是8086CPU中和<strong>bx功能相近</strong>的寄存器，但是SI和DI<strong>不能够分为两个8位寄存器</strong>使用。</p>
 <p>下面三组指令实现了相同的功能</p>
+<span id="more"></span>
+
 <p>(1)</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov bx,0</span><br><span class="line">mov ax,[bx]</span><br></pre></td></tr></table></figure>
 
@@ -193,7 +193,6 @@
 
 <p>(3)</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov di,0</span><br><span class="line">mov ax,[di]</span><br></pre></td></tr></table></figure>
-
 
 <p><strong>问题：</strong>用寄存器SI和DI实现将字符串’welcome to masm!’复制到它后面的数据区中。</p>
 <p><strong>分析：</strong>我们在处理数据之前首先要搞清楚数据存储在什么地方，也就是说<strong>数据的内存地址</strong>。</p>
@@ -244,7 +243,7 @@
 <p>loop s</p>
 <p>我们用bx作变量，定位每行的起始地址，用3定位要修改的列，用[bx+idata]的方式来对目标单元进行寻址。</p>
 <p><strong>代码实现：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">assume cs:codesg,ds:datasg</span><br><span class="line"></span><br><span class="line">datasg segment</span><br><span class="line">  db &#x27;1 .file         &#x27;	</span><br><span class="line">  db &#x27;2 .edit         &#x27;</span><br><span class="line">  db &#x27;3 .search       &#x27;</span><br><span class="line">  db &#x27;4 .view         &#x27;</span><br><span class="line">  db &#x27;5 .options      &#x27;</span><br><span class="line">  db &#x27;6 .help         &#x27;</span><br><span class="line">datasg ends</span><br><span class="line"></span><br><span class="line">codesg segment</span><br><span class="line">  start: mov ax,datasg</span><br><span class="line">  		 mov ds,ax</span><br><span class="line">  		 mov bx,0</span><br><span class="line">  			 </span><br><span class="line">  		 mov cx,6</span><br><span class="line">   	s: mov al,[bx+3]	;注意,单位是字节,所以是al</span><br><span class="line">  	   and al,11011111b</span><br><span class="line"> 	   mov [bx+3],al</span><br><span class="line">  	   add bx,16</span><br><span class="line">  	   loop s</span><br><span class="line">  		   </span><br><span class="line">  	mov ax,4c00h</span><br><span class="line">  	int 21h</span><br><span class="line">codesg ends</span><br><span class="line">end start</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">assume cs:codesg,ds:datasg</span><br><span class="line"></span><br><span class="line">datasg segment</span><br><span class="line">  db &#x27;1 .file         &#x27;	</span><br><span class="line">  db &#x27;2 .edit         &#x27;</span><br><span class="line">  db &#x27;3 .search       &#x27;</span><br><span class="line">  db &#x27;4 .view         &#x27;</span><br><span class="line">  db &#x27;5 .options      &#x27;</span><br><span class="line">  db &#x27;6 .help         &#x27;</span><br><span class="line">datasg ends</span><br><span class="line"></span><br><span class="line">codesg segment</span><br><span class="line">  start: mov ax,datasg</span><br><span class="line">  		 mov ds,ax</span><br><span class="line">  		 mov bx,0</span><br><span class="line">  			 </span><br><span class="line">  		 mov cx,6</span><br><span class="line">   	  s: mov al,[bx+3]	;注意,单位是字节,所以是al</span><br><span class="line">  	     and al,11011111b</span><br><span class="line"> 	     mov [bx+3],al</span><br><span class="line">  	     add bx,16</span><br><span class="line">  	     loop s</span><br><span class="line">  		   </span><br><span class="line">  	mov ax,4c00h</span><br><span class="line">  	int 21h</span><br><span class="line">codesg ends</span><br><span class="line">end start</span><br></pre></td></tr></table></figure>
 
 <p>debug效果：</p>
 <p><img src="https://leiteorz.oss-cn-hangzhou.aliyuncs.com/img/image-20221018215751846.png" alt="image-20221018215751846"></p>
@@ -388,6 +387,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2022/10/20/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E7%9A%84%E4%B8%A4%E4%B8%AA%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          数据处理的两个基本问题
+        
+      </div>
+    </a>
   
   
     <a href="/2022/10/01/Kotlin-%E6%8E%A5%E5%8F%A3/" id="article-nav-older" class="article-nav-link-wrap">
