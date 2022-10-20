@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://example.com">
   <title>更灵活定位内存地址 | leiteorz的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="更灵活定位内存地址1.SI和DISI和DI是8086CPU中和bx功能相近的寄存器，但是SI和DI不能够分为两个8位寄存器使用。">
+  <meta name="description" content="更灵活定位内存地址">
 <meta property="og:type" content="article">
 <meta property="og:title" content="更灵活定位内存地址">
 <meta property="og:url" content="http://example.com/2022/10/18/%E6%9B%B4%E7%81%B5%E6%B4%BB%E5%AE%9A%E4%BD%8D%E5%86%85%E5%AD%98%E5%9C%B0%E5%9D%80/index.html">
 <meta property="og:site_name" content="leiteorz的博客">
-<meta property="og:description" content="更灵活定位内存地址1.SI和DISI和DI是8086CPU中和bx功能相近的寄存器，但是SI和DI不能够分为两个8位寄存器使用。">
+<meta property="og:description" content="更灵活定位内存地址">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://leiteorz.oss-cn-hangzhou.aliyuncs.com/img/image-20221018212503530.png">
 <meta property="og:image" content="https://leiteorz.oss-cn-hangzhou.aliyuncs.com/img/image-20221018215751846.png">
 <meta property="og:image" content="https://leiteorz.oss-cn-hangzhou.aliyuncs.com/img/image-20221019210537607.png">
 <meta property="article:published_time" content="2022-10-18T07:46:03.000Z">
-<meta property="article:modified_time" content="2022-10-20T02:15:23.260Z">
+<meta property="article:modified_time" content="2022-10-20T02:44:39.309Z">
 <meta property="article:author" content="leiteorz">
 <meta property="article:tag" content="汇编笔记">
 <meta name="twitter:card" content="summary">
@@ -181,9 +181,10 @@
       
 
              
-        <h2 id="更灵活定位内存地址"><a href="#更灵活定位内存地址" class="headerlink" title="更灵活定位内存地址"></a>更灵活定位内存地址</h2><h3 id="1-SI和DI"><a href="#1-SI和DI" class="headerlink" title="1.SI和DI"></a>1.SI和DI</h3><p><strong>SI和DI</strong>是8086CPU中和<strong>bx功能相近</strong>的寄存器，但是SI和DI<strong>不能够分为两个8位寄存器</strong>使用。</p>
-<span id="more"></span>
+        <h1 id="更灵活定位内存地址"><a href="#更灵活定位内存地址" class="headerlink" title="更灵活定位内存地址"></a>更灵活定位内存地址</h1><span id="more"></span>
 
+<p>[TOC]</p>
+<h2 id="1-SI和DI"><a href="#1-SI和DI" class="headerlink" title="1.SI和DI"></a>1.SI和DI</h2><p><strong>SI和DI</strong>是8086CPU中和<strong>bx功能相近</strong>的寄存器，但是SI和DI<strong>不能够分为两个8位寄存器</strong>使用。</p>
 <p>下面三组指令实现了相同的功能</p>
 <p>(1)</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov bx,0</span><br><span class="line">mov ax,[bx]</span><br></pre></td></tr></table></figure>
@@ -202,7 +203,7 @@
 <p><strong>代码：</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">assume cs:codesg,ds:datasg</span><br><span class="line"></span><br><span class="line">  datasg segment</span><br><span class="line">    db &#x27;welcome to masm!&#x27;</span><br><span class="line">  datasg ends</span><br><span class="line"></span><br><span class="line">  codesg segment</span><br><span class="line">    start: mov ax,datasg</span><br><span class="line">           mov ds,ax</span><br><span class="line">           mov si,0</span><br><span class="line">           mov di,16</span><br><span class="line">           mov cx,8</span><br><span class="line">        s: mov ax,[si]</span><br><span class="line">           mov [di],ax</span><br><span class="line">           add si,2</span><br><span class="line">           add di,2</span><br><span class="line">           loop s</span><br><span class="line">                                                                           </span><br><span class="line">           mov ax,4c00h</span><br><span class="line">           int 21h</span><br><span class="line">  codesg ends</span><br><span class="line">  </span><br><span class="line">end start</span><br></pre></td></tr></table></figure>
 
-<h4 id="1-1-bx-si-和-bx-di"><a href="#1-1-bx-si-和-bx-di" class="headerlink" title="1.1 [bx+si] 和 [bx+di]"></a>1.1 [bx+si] 和 [bx+di]</h4><p>[bx+si]和[bx+di]的含义类似，我们以[bx+si]为例。</p>
+<h3 id="1-1-bx-si-和-bx-di"><a href="#1-1-bx-si-和-bx-di" class="headerlink" title="1.1 [bx+si] 和 [bx+di]"></a>1.1 [bx+si] 和 [bx+di]</h3><p>[bx+si]和[bx+di]的含义类似，我们以[bx+si]为例。</p>
 <p>[bx+si]表示一个内存单元，它的偏移地址为(bx)+(si)，即bx中的数值加上si中的数值</p>
 <p>指令<code>mov ax,[bx+si]</code>的数学化的描述为：(ax) = ((ds)*16 + (bx) + (si))</p>
 <p><strong>问题：</strong>用Debug查看内存，结果如下：</p>
@@ -210,7 +211,7 @@
 <p>写出下面程序执行后,cx、ax中的内容</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mov ax,2000h</span><br><span class="line">mov ds,ax</span><br><span class="line">mov bx,1000h</span><br><span class="line">mov si,0</span><br><span class="line">mov ax,[bx+si]	;ax的值为00BE</span><br><span class="line">inc si</span><br><span class="line">mov cx,[bx+si]	;cx的值为0600</span><br><span class="line">inc si</span><br><span class="line">mov di,si	;di的值为3</span><br><span class="line">mov ax,[bx+di]	;ax的值为0006</span><br></pre></td></tr></table></figure>
 
-<h4 id="1-2-bx-si-idata-和-bx-di-idata"><a href="#1-2-bx-si-idata-和-bx-di-idata" class="headerlink" title="1.2 [bx+si+idata]和[bx+di+idata]"></a>1.2 [bx+si+idata]和[bx+di+idata]</h4><p>[bx+si+idata]和[bx+di+idata]的含义相似。我们以[bx+si+idata]为例。</p>
+<h3 id="1-2-bx-si-idata-和-bx-di-idata"><a href="#1-2-bx-si-idata-和-bx-di-idata" class="headerlink" title="1.2 [bx+si+idata]和[bx+di+idata]"></a>1.2 [bx+si+idata]和[bx+di+idata]</h3><p>[bx+si+idata]和[bx+di+idata]的含义相似。我们以[bx+si+idata]为例。</p>
 <p>[bx+si+idata]表示一个内存单元，它的偏移地址为(bx)+(si)+idata。</p>
 <p>指令<code>mov ax,[bx+si+idata]</code>的数学化描述为(ax) = ((ds)*16 + (bx) +(si) + idata)</p>
 <p>该指令可以写成如下格式</p>
@@ -221,7 +222,7 @@
 <p>写出下面的程序执行后,ax、bx、cx中的内容。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mov ax,2000h</span><br><span class="line">mob ds,ax</span><br><span class="line">mov bx,1000h</span><br><span class="line">mov si,0</span><br><span class="line">mov ax,[bx+2+si]	;ax=0006H</span><br><span class="line">inc si	</span><br><span class="line">mov cx,[bx+2+si]	;cx=6A00H</span><br><span class="line">inc si</span><br><span class="line">mov di,si	;di=0002H</span><br><span class="line">mov bx,[bx+2+di]	;bx=226A</span><br></pre></td></tr></table></figure>
 
-<h3 id="2-不同寻址方式的灵活应用"><a href="#2-不同寻址方式的灵活应用" class="headerlink" title="2.不同寻址方式的灵活应用"></a>2.不同寻址方式的灵活应用</h3><p>将<strong>寻址方式</strong>总结为以下几种方法:</p>
+<h2 id="2-不同寻址方式的灵活应用"><a href="#2-不同寻址方式的灵活应用" class="headerlink" title="2.不同寻址方式的灵活应用"></a>2.不同寻址方式的灵活应用</h2><p>将<strong>寻址方式</strong>总结为以下几种方法:</p>
 <ol>
 <li>[idata]用一个常量来表示地址，可用于直接定位一个内存单元<strong>（直接寻址）</strong></li>
 <li>[bx]用一个变量来表示内存单元，可用于间接定位一个内存单元<strong>（间接寻址）</strong></li>
@@ -232,7 +233,7 @@
 </ol>
 <p>可以看到：</p>
 <p>从[idata]一直到[bx+si+idata]，我们可以用更加灵活的方式来定位一个内存单元的地址。这使我们可以从<strong>更加结构化</strong>的角度来看待所要处理的数据。</p>
-<h4 id="2-1-单重循环处理"><a href="#2-1-单重循环处理" class="headerlink" title="2.1 单重循环处理"></a>2.1 单重循环处理</h4><p><strong>问题1：</strong>编程，将datasg段中每个单词的头一个字母改为大写字母。</p>
+<h3 id="2-1-单重循环处理"><a href="#2-1-单重循环处理" class="headerlink" title="2.1 单重循环处理"></a>2.1 单重循环处理</h3><p><strong>问题1：</strong>编程，将datasg段中每个单词的头一个字母改为大写字母。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">assume cs:codesg,ds:datasg</span><br><span class="line"></span><br><span class="line">datasg segment</span><br><span class="line">  db &#x27;1. file         &#x27;	</span><br><span class="line">  db &#x27;2 .edit         &#x27;</span><br><span class="line">  db &#x27;3 .search       &#x27;</span><br><span class="line">  db &#x27;4 .view         &#x27;</span><br><span class="line">  db &#x27;5 .options      &#x27;</span><br><span class="line">  db &#x27;6 .help         &#x27;</span><br><span class="line">datasg ends</span><br><span class="line"></span><br><span class="line">codesg segment</span><br><span class="line">  start: ...</span><br><span class="line">codesg ends</span><br></pre></td></tr></table></figure>
 
 <p><strong>分析：</strong>datasg中的数据的存储结构，如图：</p>
@@ -248,7 +249,7 @@
 
 <p>debug效果：</p>
 <p><img src="https://leiteorz.oss-cn-hangzhou.aliyuncs.com/img/image-20221018215751846.png" alt="image-20221018215751846"></p>
-<h4 id="2-2-多重循环处理"><a href="#2-2-多重循环处理" class="headerlink" title="2.2 多重循环处理"></a>2.2 多重循环处理</h4><p><strong>问题2：</strong>将datasg段中每个单词改为大写字母。</p>
+<h3 id="2-2-多重循环处理"><a href="#2-2-多重循环处理" class="headerlink" title="2.2 多重循环处理"></a>2.2 多重循环处理</h3><p><strong>问题2：</strong>将datasg段中每个单词改为大写字母。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">assume cs:codesg,ds:datasg</span><br><span class="line"></span><br><span class="line">datasg segment</span><br><span class="line">  db &#x27;ibm             &#x27;</span><br><span class="line">  db &#x27;dec             &#x27;</span><br><span class="line">  db &#x27;dos             &#x27;</span><br><span class="line">  db &#x27;vax             &#x27;</span><br><span class="line">datasg ends</span><br><span class="line"></span><br><span class="line">codesg segment</span><br><span class="line">  start: ...</span><br><span class="line">  codesg ends</span><br><span class="line">end start</span><br></pre></td></tr></table></figure>
 
 <p><strong>分析：</strong>因为它们是连续存放的，我们可以将这4个字符串看成一个4行16列的二维数组。按照要求，我们需要修改每一个单词，即二维数组的每一行的前三列。</p>
@@ -276,7 +277,7 @@
 <p><strong>一般来说，在需要暂存数据的时候，我们都应该使用栈。</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">assume cs:codesg,ds:datasg,ss:stacksg</span><br><span class="line"></span><br><span class="line">datasg segment</span><br><span class="line">  db &#x27;ibm             &#x27;</span><br><span class="line">  db &#x27;dec             &#x27;</span><br><span class="line">  db &#x27;dos             &#x27;</span><br><span class="line">  db &#x27;vax             &#x27;</span><br><span class="line">datasg ends</span><br><span class="line"></span><br><span class="line">stacksg segment	;定义一个段,用来作栈段,容量为16个字节</span><br><span class="line">	dw 0,0,0,0,0,0,0,0</span><br><span class="line">stacksg ends</span><br><span class="line"></span><br><span class="line">codesg segment</span><br><span class="line">  start: mov ax,datasg</span><br><span class="line">   	     mov ds,ax</span><br><span class="line">   		 mov bx,0</span><br><span class="line">   		 mov cx,4</span><br><span class="line">   	 s0: mov si,0</span><br><span class="line">   	     push cx	;将外层循环的cx值压栈</span><br><span class="line">   	     mov cx,3</span><br><span class="line">   	  s: mov al,[bx+si]</span><br><span class="line">   	     and al,11011111b</span><br><span class="line">   	     mov [bx+si],al</span><br><span class="line">   	     inc si</span><br><span class="line">   	     </span><br><span class="line">   	     loop s</span><br><span class="line">   	     </span><br><span class="line">   	     add bx,16</span><br><span class="line">   	     pop cx	;从栈顶弹出原cx的值,恢复cx</span><br><span class="line">   	     loop s0</span><br><span class="line">   	     </span><br><span class="line">   	     mov ax,4c00h</span><br><span class="line">   	     int 21h</span><br><span class="line">  codesg ends</span><br><span class="line">end start</span><br></pre></td></tr></table></figure>
 
-<h3 id="3-课后实验"><a href="#3-课后实验" class="headerlink" title="3.课后实验"></a>3.课后实验</h3><p><strong>题目：</strong>编程，将datasg段中每个单词的前四个字母改为大写字母。</p>
+<h2 id="3-课后实验"><a href="#3-课后实验" class="headerlink" title="3.课后实验"></a>3.课后实验</h2><p><strong>题目：</strong>编程，将datasg段中每个单词的前四个字母改为大写字母。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">assume cs:codesg,ds:datasg,ss:stacksg</span><br><span class="line">stacksg segment</span><br><span class="line">  dw 0,0,0,0,0,0,0,0</span><br><span class="line">stacksg ends</span><br><span class="line"></span><br><span class="line">datasg segment</span><br><span class="line">  db &#x27;1. display......&#x27;</span><br><span class="line">  db &#x27;2. brows........&#x27;</span><br><span class="line">  db &#x27;3. replace......&#x27;</span><br><span class="line">  db &#x27;3. modify.......&#x27;</span><br><span class="line">datasg ends</span><br><span class="line"></span><br><span class="line">codesg segment</span><br><span class="line">  start: ...</span><br><span class="line">codesg ends</span><br><span class="line">end start</span><br></pre></td></tr></table></figure>
 
 <p><strong>答案：</strong></p>
@@ -410,6 +411,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9B%B4%E7%81%B5%E6%B4%BB%E5%AE%9A%E4%BD%8D%E5%86%85%E5%AD%98%E5%9C%B0%E5%9D%80"><span class="toc-number">1.</span> <span class="toc-text">更灵活定位内存地址</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-SI%E5%92%8CDI"><span class="toc-number">1.1.</span> <span class="toc-text">1.SI和DI</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-bx-si-%E5%92%8C-bx-di"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1 [bx+si] 和 [bx+di]</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-bx-si-idata-%E5%92%8C-bx-di-idata"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.2 [bx+si+idata]和[bx+di+idata]</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%B8%8D%E5%90%8C%E5%AF%BB%E5%9D%80%E6%96%B9%E5%BC%8F%E7%9A%84%E7%81%B5%E6%B4%BB%E5%BA%94%E7%94%A8"><span class="toc-number">1.2.</span> <span class="toc-text">2.不同寻址方式的灵活应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%8D%95%E9%87%8D%E5%BE%AA%E7%8E%AF%E5%A4%84%E7%90%86"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 单重循环处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%A4%9A%E9%87%8D%E5%BE%AA%E7%8E%AF%E5%A4%84%E7%90%86"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2 多重循环处理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%AF%BE%E5%90%8E%E5%AE%9E%E9%AA%8C"><span class="toc-number">1.3.</span> <span class="toc-text">3.课后实验</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>
